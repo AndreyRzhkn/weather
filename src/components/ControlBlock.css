@@ -1,0 +1,50 @@
+.control-block {
+    width: 400px;
+    height: 70px;
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.update-img {
+    width: 100px;
+    height: 30px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 20px;
+    margin: 0px 0px 0px 20px;
+}
+.language {
+    display: flex;
+}
+.language-point{
+    margin: 0px 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid black;
+}
+.gradus {
+    display: flex;
+    margin: 0px 20px 0px 0px;
+}
+.gradus-point {
+    margin: 0px 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid black;
+}

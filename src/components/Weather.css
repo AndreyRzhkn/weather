@@ -1,9 +1,17 @@
-.data {
-    width: 270px;
-
+.data-white {
+    width: 350px;
     background-color: white;
     border-radius: 20px;
-    margin: 30px 0px 0px 0px ;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+}
+.data-black {
+    width: 350px;
+    background-color: grey;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -12,4 +20,7 @@
 }
 .current-temp {
     font-size: 100px;
+}
+.city {
+    font-size: 50px;
 }

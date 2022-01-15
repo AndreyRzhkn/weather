@@ -5,41 +5,23 @@ import Coordinates from "./components/Coordinates";
 import Weather from "./components/Weather";
 import {
   getLinkToImage,
-  getWeatherInfo,
   getGeolocationInfo,
-  getCoordinatesInfo,
-} from "./API/API";
+} from "./api/api.js";
 
-/// use additional file for maps and obtions with import
 
-const maps =
-  "pk.eyJ1IjoiYXJvemgiLCJhIjoiY2t5MWwzMncxMGNrZTJubGd0YnJlcjYzZSJ9.S9qiGdmXdAY0bdvE9xPoRA";
-
-const options = {
-  weekday: "short",
-  day: "numeric",
-  month: "long",
-  hour: "numeric",
-  minute: "numeric",
-  second: "numeric",
-  hour12: false,
-};
 
 class App extends React.Component {
+  constructor(props){
+    super(props);
+    this.textInput = React.createRef();
+    this.focusTextInput = this.focusTextInput.bind(this)
+  }
   state = {
     backgroundImg: "",
-
-    date: new Date(),
-
     lang: "en",
-    degrees: "M",
-    city: "Orsha",
-
-    curTemp: "",
-    wind: "",
-    feel: "",
-    humidity: "",
-
+    degrees: "Celsium",
+    city: "Polotsk",
+    colour: "white",
     latitude: "",
     longitude: "",
   };
@@ -47,19 +29,6 @@ class App extends React.Component {
   setGeolocationInfo = (result) => {
     this.setState({
       city: result.city,
-    });
-  };
-
-  setCoordinatesInfo = (res) => {
-    this.setState({
-      latitude: res.results[0].geometry.lat,
-      longitude: res.results[0].geometry.lng,
-    });
-  };
-
-  setTime = () => {
-    this.setState({
-      date: new Date(),
     });
   };
 
@@ -84,25 +53,25 @@ class App extends React.Component {
       lang: "be",
     });
   };
+  setColourBlack = () => {
+    this.setState({
+      colour: "black"
+    })
+  }
+  setColourWhite = () => {
+    this.setState({
+      colour: "white"
+    })
+  }
 
   setCelcius = () => {
     this.setState({
-      degrees: "M",
+      degrees: "Celsium",
     });
   };
   setFahrenheit = () => {
     this.setState({
-      degrees: "I",
-    });
-  };
-
-  setWeatherInfo = (res) => {
-    console.log(res);
-    this.setState({
-      curTemp: res.data[0].temp,
-      wind: res.data[0].wind_spd,
-      feel: res.data[0].app_max_temp,
-      humidity: res.data[0].rh,
+      degrees: "Farengeit",
     });
   };
 
@@ -110,60 +79,47 @@ class App extends React.Component {
     getLinkToImage().then((data) => {
       this.setBackgroundImg(data);
     });
-    this.timerID = setInterval(() => this.setTime(), 1000);
-    getWeatherInfo(this.state.city, this.state.degrees, this.state.lang).then(
-      (res) => {
-        console.log(res);
-        this.setWeatherInfo(res);
-      }
-    );
-    getCoordinatesInfo(this.state.city).then((res) => {
-      this.setCoordinatesInfo(res);
-    });
+    
     getGeolocationInfo().then((result) => {
       this.setGeolocationInfo(result);
     });
+    
   }
 
-  componentDidUpdate(_, s) {
-    /// ? prevState, prevProps
-
-    if (s.backgroundImg !== this.state.backgroundImg) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.backgroundImg !== this.state.backgroundImg) {
       getLinkToImage().then((data) => {
         this.setBackgroundImg(data);
       });
     }
-    if (s.curTemp !== this.state.curTemp) {
-      getWeatherInfo(this.state.city, this.state.degrees, this.state.lang).then(
-        (res) => {
-          console.log(res);
-          this.setWeatherInfo(res);
-        }
-      );
-    }
-    if (s.latitude !== this.state.latitude) {
-      getCoordinatesInfo(this.state.city).then((res) => {
-        this.setCoordinatesInfo(res);
-      });
-    }
-    if (s.city !== this.state.city) {
-      getGeolocationInfo().then((result) => {
-        this.setGeolocationInfo(result);
-      });
-    }
+    // if (prevState.latitude !== this.state.latitude) {
+    //   getCoordinatesInfo(this.state.city).then((res) => {
+    //     this.setCoordinatesInfo(res);
+    //   });
+    // }
   }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID);
+  focusTextInput = () => {
+    this.setState({
+      city: this.textInput.current.value
+    })
   }
 
   render() {
-    const { date, feel, wind, lang } = this.state;
+    const { lang,
+            backgroundImg,
+            city,
+            degrees,
+            colour,
+            latitude,
+            longitude,
+          } = this.state;
+          
     return (
       <div
         className="App"
-        style={{ backgroundImage: `url(${this.state.backgroundImg})` }}
+        style={{ backgroundImage: `url(${backgroundImg})`}}
       >
+        
         <ControlBlock
           setBackgroundImg={this.setBackgroundImg}
           setRuLang={this.setRuLang}
@@ -172,19 +128,26 @@ class App extends React.Component {
           setCelcius={this.setCelcius}
           setFahrenheit={this.setFahrenheit}
           lang={lang}
+          city={city}
+          ref={this.textInput}
+          focusTextInput={this.focusTextInput}
+          setColourBlack={this.setColourBlack}
+          setColourWhite={this.setColourWhite}
+          colour={colour}
         />
-        <Weather
-          data={this.state.date.toLocaleString(`${this.state.lang}`, options)}
-          curTemp={this.state.curTemp}
-          feel={this.state.feel}
-          wind={this.state.wind}
-          humidity={this.state.humidity}
-        />
-        <Coordinates
-          lang={this.state.lang}
-          Latitude={this.state.latitude}
-          Longitude={this.state.longitude}
-        />
+        <div className="info-block">
+          <Weather
+            lang = {lang}
+            city = {city}
+            degrees={degrees}
+            colour={colour}
+          />
+          <Coordinates
+            lang={lang}
+            city={city}
+            colour={colour}
+          />
+        </div>
       </div>
     );
   }
